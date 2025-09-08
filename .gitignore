@@ -3,3 +3,4 @@ firebase-service-account.json
 node_modules/
 dist/
 .venv/
+firebase.js
