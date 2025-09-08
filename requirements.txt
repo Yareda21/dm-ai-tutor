@@ -1,6 +1,6 @@
+langchain-openai
+openai
 fastapi
 uvicorn[standard]
 gunicorn
 python-dotenv
-# keep your LLM package line (if pip package name differs, add the correct one)
-# For example (if applicable): langchain-openai
