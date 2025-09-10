@@ -1,0 +1,184 @@
+# Yared Coding — Ingestion Document for RAG
+
+This file is a clean, ingestion-ready plaintext dataset meant to be directly indexed into your vector database. Each document chunk below follows a strict, machine-friendly format so the RAG pipeline can parse metadata and text easily.
+
+FORMAT SPEC (use this exact template for automated ingestion):
+
+\---DOC\_START---
+id: <uuid-or-slug>
+source\_url: \<full URL if public, or "private:/..." if private>
+title: <short title>
+author: <name or organization>
+published\_date: <YYYY-MM-DD or null>
+language: \<en | am>
+tags: <comma-separated tags>
+summary: <one-sentence summary>
+content:
+\<full text content (no lines starting with '---DOC\_' )>
+\---DOC\_END---
+
+Notes:
+
+* Keep each content block around 200–500 words (or 200–400 tokens) when possible.
+* Use `language` metadata to indicate Amharic chunks (am) vs English (en).
+* For private/student data, set source\_url to a private namespace (e.g., private:/students/<id>/notes) and DO NOT expose publicly.
+* Include clear `published_date` when available to help recency-aware retrievers.
+
+---
+
+# Pre-built document chunks about Yared Coding and Yared Kebede (for ingestion)
+
+---
+
+\---DOC\_START---
+id: school\_overview\_en
+source\_url: [https://yared-coding.com.et/](https://yared-coding.com.et/)
+title: Yared Coding School — Overview
+author: Yared Coding (Yared Kebede)
+published\_date: 2025-01-01
+language: en
+tags: school, overview, mission
+summary: Yared Coding is a small coding school that offers practical short courses in web development, data analysis, digital marketing, and programming projects for students in Ethiopia.
+content:
+Yared Coding is an educational initiative focused on teaching practical web development, data analysis, and digital marketing. The school emphasizes hands-on projects and real-world examples. Core offerings include front-end development (HTML, CSS, JavaScript, React), backend development (Node.js, Express, MySQL), data analysis with Python (pandas, NumPy), and short courses in digital marketing. The school maintains a student dashboard, live sessions, and practical assignments meant to prepare students for freelancing and entry-level developer roles. Contact and course listings are published on the public site ([https://yared-coding.com.et](https://yared-coding.com.et)).
+\---DOC\_END---
+
+\---DOC\_START---
+id: school\_overview\_am
+source\_url: [https://yared-coding.com.et/](https://yared-coding.com.et/)
+title: የYared Coding ትምህርት — አጠቃላይ መግለጫ
+author: Yared Coding (Yared Kebede)
+published\_date: 2025-01-01
+language: am
+tags: school, overview, mission
+summary: Yared Coding በኢትዮጵያ የሚገኙ ለተማሪዎች የስራ እና የማስተላለፊያ ችሎታዎችን የሚሰጥ ኮዲንግ ትምህርት ነው።
+content:
+Yared Coding ትምህርት በሕግና በተግባር የተመሰረተ የኮዲንግ ትምህርት ነው። ዋና እንደ ስራ የሚጠቀሙ የንግድ ዕውቀት እና የብልጥ ክህሎቶችን ለተማሪዎች ይሰጣል። ዋና ስራዎች በፊት-ኤንድ (HTML, CSS, JavaScript, React), በኋላ-ኤንድ (Node.js, Express, MySQL), በፓይቶን የውሂብ ትንተና (pandas, NumPy) እና ንግድ ማስታወቂያ ናቸው።
+\---DOC\_END---
+
+\---DOC\_START---
+id: owner\_bio\_en
+source\_url: [https://yared-coding.com.et/about](https://yared-coding.com.et/about)
+title: Yared Kebede — Founder & Lead Instructor
+author: Yared Kebede
+published\_date: 2024-12-27
+language: en
+tags: founder, instructor, bio
+summary: Yared Kebede is a web developer and educator who runs Yared Coding, teaches web development and data analysis, and builds educational tools.
+content:
+Yared Kebede is the founder and lead instructor at Yared Coding. He teaches web development (HTML, CSS, JavaScript, React), backend development (Node.js, Express), and data analysis with Python (pandas, NumPy). Yared has experience building full-stack projects, deploying web apps, integrating Firebase for authentication and database needs, and developing teaching materials. He also works on applied projects like an AI tutor system using OpenAI models and vector search, a full-stack banking project, and mobile apps for his school. Yared prioritizes practical, project-based teaching and often produces course materials, live sessions, and hands-on assignments.
+\---DOC\_END---
+
+\---DOC\_START---
+id: owner\_bio\_am
+source\_url: [https://yared-coding.com.et/about](https://yared-coding.com.et/about)
+title: ያረድ ከበደ — የተቋሙ ባለቤት እና አስተማሪ
+author: Yared Kebede
+published\_date: 2024-12-27
+language: am
+tags: founder, instructor, bio
+summary: ያረድ ከበደ የYared Coding ባለቤት እና ዋና አስተማሪ ናቸው።
+content:
+ያረድ ከበደ የYared Coding ባለቤት እና ዋና አስተማሪ ናቸው። የድር ልማት (HTML, CSS, JavaScript, React), የጀርባ ልማት (Node.js, Express), እና በፓይቶን የውሂብ ትንተና ላይ የሚሰሩ ናቸው። ያረድ ለተማሪዎች ስለሚሆን በተግባር የተመሰረተ ትምህርት ይሰጣሉ።
+\---DOC\_END---
+
+\---DOC\_START---
+id: course\_backend\_nodejs\_en
+source\_url: [https://yared-coding.com.et/courses/backend-nodejs](https://yared-coding.com.et/courses/backend-nodejs)
+title: Backend Web Development — Node.js & Express
+author: Yared Coding
+aublished\_date: 2025-05-03
+language: en
+tags: course, backend, nodejs, express, mysql
+summary: A practical backend development course that transitions students from frontend skills to building RESTful APIs using Node.js and Express with MySQL.
+content:
+This course helps frontend developers transition to backend development. Topics include Node.js fundamentals, Express routing, REST API design, MySQL relational schema design, secure authentication using Firebase or JWT, deployment strategies, and building real-world projects (for example, a banking app with accounts, transactions, and employee/customer roles). The course emphasizes hands-on projects, deployment, and avoids heavy frameworks like Redux and does not focus on automated tests as a first step.
+\---DOC\_END---
+
+\---DOC\_START---
+id: course\_digitalmarketing\_en
+source\_url: [https://yared-coding.com.et/courses/digital-marketing](https://yared-coding.com.et/courses/digital-marketing)
+title: Digital Marketing Course — Beginner to Advanced
+author: Yared Coding
+published\_date: 2024-08-09
+language: en
+tags: course, digital-marketing, upwork, linkedin, ecommerce
+summary: A three-level digital marketing curriculum covering basics through advanced topics, plus a beginner section for Upwork, LinkedIn optimization and AliExpress/Shein shopping.
+content:
+The digital marketing course is divided into beginner, intermediate, and advanced levels. Topics include content marketing, SEO basics, social media ads, email marketing, analytics, and practical assignments. The beginner section includes lessons on Upwork profile optimization, LinkedIn optimization, and basics of shopping on AliExpress and Shein for product sourcing. The advanced track has submodules with hands-on campaigns and performance tracking.
+\---DOC\_END---
+
+\---DOC\_START---
+id: project\_ai\_tutor\_en
+source\_url: [https://yared-coding.com.et/projects/ai-tutor](https://yared-coding.com.et/projects/ai-tutor)
+title: AI Tutor System — RAG + Pinecone + OpenAI
+author: Yared Coding
+published\_date: 2025-08-07
+language: en
+tags: project, ai, rag, pinecone
+summary: An AI tutor integrating vector search and OpenAI models to answer student questions using school content and course materials.
+content:
+The AI Tutor project uses a RAG architecture: documents (course notes, blog posts, transcripts) are chunked, embedded, and indexed into a vector DB (e.g., Pinecone). The API retrieves relevant chunks and augments LLM prompts with citations. The system uses Firebase for authentication, n8n for automation, and Langflow/LangGraph agents for orchestration. The project is designed to answer in English and Amharic and prioritize evidence-backed answers.
+\---DOC\_END---
+
+\---DOC\_START---
+id: project\_bankapp\_en
+source\_url: [https://yared-coding.com.et/projects/banking-app](https://yared-coding.com.et/projects/banking-app)
+title: Full-stack Bank Management Project
+author: Yared Coding
+published\_date: 2025-06-29
+language: en
+tags: project, fullstack, sql
+summary: A student-facing full-stack project using Express.js and MySQL that models branches, employees, customers, accounts and transactions.
+content:
+This project demonstrates a production-like schema with branches, employees, customers, account types, accounts, transactions, views, and stored procedures for money transfers. Students implement server-side logic in Express.js, data persistence in MySQL, and build frontends with React. The project emphasizes secure transaction handling, role-based access, and clean database design.
+\---DOC\_END---
+
+\---DOC\_START---
+id: teaching\_style\_en
+source\_url: [https://yared-coding.com.et/](https://yared-coding.com.et/)
+title: Teaching Philosophy & Style
+author: Yared Coding
+published\_date: 2025-01-04
+language: en
+tags: pedagogy, teaching-style
+summary: Practical, project-based learning with clear motivation, applications and how-to steps for each topic.
+content:
+Yared Coding's teaching principle: explain why a student should learn a topic, how they'll use it, and provide real practical applications. Lessons favor project-based tasks, step-by-step guides, and encourage portfolio-building. Live sessions, assignments, and an emphasis on tooling (Firebase, Git, Docker) support skill transfer to freelancing or employment.
+\---DOC\_END---
+
+\---DOC\_START---
+id: contact\_info\_en
+source\_url: [https://yared-coding.com.et/contact](https://yared-coding.com.et/contact)
+title: Contact & Office Information
+author: Yared Coding
+published\_date: null
+language: en
+tags: contact, support
+summary: Primary contact methods and office hours (update with live values if available).
+content:
+For inquiries about courses, scheduling, or partnerships, use the contact form on [https://yared-coding.com.et/contact](https://yared-coding.com.et/contact) or email the school admin account. Office hours may vary; check the website for the latest schedule. (Note: Replace this block with exact phone numbers, email addresses, and office hours before indexing if you want the assistant to give exact contact details.)
+\---DOC\_END---
+
+\---DOC\_START---
+id: indexing\_instructions
+source\_url: internal:/ingestion-guidelines
+title: Ingestion Guidelines & Chunking Rules
+author: Yared Coding — RAG Admin
+published\_date: 2025-09-10
+language: en
+tags: ingestion, guidelines
+summary: Rules for splitting, metadata, and language handling for indexing Yared Coding content.
+content:
+
+1. Chunk size: aim for 200–400 tokens (roughly 100–300 words). Overlap: 20–30%.
+2. Metadata required: id, source\_url, title, author, published\_date, language, tags, summary.
+3. Language: set language=en for English text, language=am for Amharic. When possible, include both language versions as separate chunks.
+4. Private data: use private:/ namespace and do not expose without consent.
+5. Citation: store `source_url` and `position_index` in metadata so answers can include precise citations.
+6. Embeddings: use multilingual embeddings that support Amharic or transliterate Amharic text before embedding if necessary.
+   \---DOC\_END---
+
+---
+
+## END OF FILE
