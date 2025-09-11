@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 # from dotenv import load_dotenv
 # from langchain_openai import ChatOpenAI
 # import os
@@ -16,7 +15,7 @@
 
 # result = llm.invoke("hi who are you")
 # print(result)
->>>>>>> parent of 81fc09d (Merge branch 'sub' of https://github.com/Yareda21/dm-ai-tutor into sub)
+
 # main.py
 import os
 import traceback
@@ -165,8 +164,4 @@ async def ai_chat(req: ChatRequest):
                 answer = str(result)
             return {"answer": answer, "raw": result, "sources": []}
     except Exception as e:
-<<<<<<< HEAD
-=======
-        # return useful debug info (strip in prod if needed)
->>>>>>> parent of 81fc09d (Merge branch 'sub' of https://github.com/Yareda21/dm-ai-tutor into sub)
-        return {"error": str(e), "traceback": traceback.format_exc()}
+
