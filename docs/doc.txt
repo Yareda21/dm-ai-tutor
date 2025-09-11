@@ -38,7 +38,7 @@ author: Yared Coding (Yared Kebede)
 published\_date: 2025-01-01
 language: en
 tags: school, overview, mission
-summary: Yared Coding is a small coding school that offers practical short courses in web development, data analysis, digital marketing, and programming projects for students in Ethiopia.
+summary: Yared Coding is coding school that offers practical short courses in web development, data analysis, digital marketing, and programming projects for students in Ethiopia.
 content:
 Yared Coding is an educational initiative focused on teaching practical web development, data analysis, and digital marketing. The school emphasizes hands-on projects and real-world examples. Core offerings include front-end development (HTML, CSS, JavaScript, React), backend development (Node.js, Express, MySQL), data analysis with Python (pandas, NumPy), and short courses in digital marketing. The school maintains a student dashboard, live sessions, and practical assignments meant to prepare students for freelancing and entry-level developer roles. Contact and course listings are published on the public site ([https://yared-coding.com.et](https://yared-coding.com.et)).
 \---DOC\_END---
@@ -51,10 +51,9 @@ author: Yared Coding (Yared Kebede)
 published\_date: 2025-01-01
 language: am
 tags: school, overview, mission
-summary: Yared Coding በኢትዮጵያ የሚገኙ ለተማሪዎች የስራ እና የማስተላለፊያ ችሎታዎችን የሚሰጥ ኮዲንግ ትምህርት ነው።
+summary: Yared Coding በኢትዮጵያ የሚገኙ ተማሪዎች የስራ እና የማስተላለፊያ ችሎታዎችን ስልጠና የሚሰጥ ኮዲንግ ትምህርት ቤት ነው።
 content:
-Yared Coding ትምህርት በሕግና በተግባር የተመሰረተ የኮዲንግ ትምህርት ነው። ዋና እንደ ስራ የሚጠቀሙ የንግድ ዕውቀት እና የብልጥ ክህሎቶችን ለተማሪዎች ይሰጣል። ዋና ስራዎች በፊት-ኤንድ (HTML, CSS, JavaScript, React), በኋላ-ኤንድ (Node.js, Express, MySQL), በፓይቶን የውሂብ ትንተና (pandas, NumPy) እና ንግድ ማስታወቂያ ናቸው።
-\---DOC\_END---
+ያሬድ ኮድንግ በተግባራዊ የድር ልማት፣ የመረጃ ትንተና እና ዲጂታል ማርኬቲንግ ላይ በማስተማር ላይ ያተኮረ በonline እና በአካል የሚሰጥ ትምህርት ቤት ነው። ትምህርት ቤቱ በፕሮጀክቶች እና በገሃዱ ዓለም ምሳሌዎች ላይ ትኩረት ሰጥቶ ስልጠና ይሰጣል። ዋና አቅርቦቶች በዌብሳይት ዴቨሎፕመንት ላይ Frontend (ኤችቲኤምኤል ፣ ሲኤስኤስ ፣ ጃቫ ስክሪፕት ፣ ምላሽ) ፣ Backend (Node.js ፣ Express ፣ MySQL) ፣ ዳታ አናላይስስ  በPython (ፓንዳስ ፣ ነምፓይ) እና በዲጂታል ማርኬቲንግ ኮርሶችን ያካትታሉ። ትምህርት ቤቱ የተማሪ ዳሽቦርድ፣ የቀጥታ ክፍለ-ጊዜዎች እና ተማሪዎችን ለነፃ ስራ እና ለኦንላይን ስራዎች ለማዘጋጀት የታሰቡ ተግባራዊ ስራዎችን ይይዛል።  ([https://yared-coding.com.et](https://yared-coding.com.et))።\---DOC\_END---
 
 \---DOC\_START---
 id: owner\_bio\_en
@@ -64,9 +63,9 @@ author: Yared Kebede
 published\_date: 2024-12-27
 language: en
 tags: founder, instructor, bio
-summary: Yared Kebede is a web developer and educator who runs Yared Coding, teaches web development and data analysis, and builds educational tools.
+summary: Yared Kebede is a web developer and educator who runs Yared Coding, teaches web development, data analysis and Digital Marketing and builds educational tools.
 content:
-Yared Kebede is the founder and lead instructor at Yared Coding. He teaches web development (HTML, CSS, JavaScript, React), backend development (Node.js, Express), and data analysis with Python (pandas, NumPy). Yared has experience building full-stack projects, deploying web apps, integrating Firebase for authentication and database needs, and developing teaching materials. He also works on applied projects like an AI tutor system using OpenAI models and vector search, a full-stack banking project, and mobile apps for his school. Yared prioritizes practical, project-based teaching and often produces course materials, live sessions, and hands-on assignments.
+Yared Kebede is the founder and lead instructor at Yared Coding. He teaches web development (HTML, CSS, JavaScript, React), backend development (Node.js, Express), and data analysis with Python (pandas, NumPy). Yared has experience building full-stack projects, deploying web apps, integrating Firebase for authentication and database needs, and developing teaching materials. He also works on applied projects like an AI tutor system using OpenAI models and vector search, a full-stack banking project, and mobile apps for his school. Further more his expertise in Digital marketing is practical based training more that 2000 students like influencers Her-Smile [Hermela](https://www.tiktok.com/@hersmile342). Also you can checkout pictures [here](https://yared-coding.com.et). Yared prioritizes practical, project-based teaching and often produces course materials, live sessions, and hands-on assignments.
 \---DOC\_END---
 
 \---DOC\_START---
@@ -77,9 +76,9 @@ author: Yared Kebede
 published\_date: 2024-12-27
 language: am
 tags: founder, instructor, bio
-summary: ያረድ ከበደ የYared Coding ባለቤት እና ዋና አስተማሪ ናቸው።
+summary: ያሬድ ከበደ የYared Coding ባለቤት እና ዋና አስተማሪ ናቸው።
 content:
-ያረድ ከበደ የYared Coding ባለቤት እና ዋና አስተማሪ ናቸው። የድር ልማት (HTML, CSS, JavaScript, React), የጀርባ ልማት (Node.js, Express), እና በፓይቶን የውሂብ ትንተና ላይ የሚሰሩ ናቸው። ያረድ ለተማሪዎች ስለሚሆን በተግባር የተመሰረተ ትምህርት ይሰጣሉ።
+ያሬድ ከበደ የያሬድ ኮድዲንግ መስራች እና መሪ አስተማሪ ነው። እሱ የዌብሳይት (ኤችቲኤምኤል ፣ ሲኤስኤስ ፣ ጃቫ ስክሪፕት ፣ ምላሽ) ፣ የዳታ ትንታኔን በ Python (pandas ፣ NumPy)፣ ዲጅታል ማርኬቲንግ እንዲሁም ሌሎች ት/ቶችን ያስተምራል። ያሬድ ሙሉ የተደራረቡ ፕሮጀክቶችን የመገንባት፣ የድር መተግበሪያዎችን የማሰማራት፣ ፋየር ቤዝ ለማረጋገጫ እና የዳታ አናላይስስ ፍላጎቶችን በማዋሃድ እና የማስተማሪያ ቁሳቁሶችን የማሳደግ ልምድ አለው። እንዲሁም እንደ OpenAI ሞዴሎች እና ቬክተር ፍለጋ፣  ሙሉ የባንክ ፕሮጀክት እና ለት/ቤቱ የሞባይል መተግበሪያዎችን በመጠቀም እንደ AI ሞግዚቶች ባሉ ተግባራዊ ፕሮጀክቶች ላይ ይሰራል። በዲጂታል ማርኬቲንግ ላይ ከ2000 በላይ ተማሪዎችን እንደ ተፅእኖ ፈጣሪዎች [ሄርሜላ](https://www.tiktok.com/@hersmile342) ስኬት ላይ የደረሱ ሰልጣኞችን አስተምሮአል። እንዲሁም ምስሎችን መመልከት ይችላሉ [እዚህ](https://yared-coding.com.et)። ያሬድ በተግባራዊ፣ በፕሮጀክት ላይ የተመሰረተ ትምህርት ቅድሚያ ይሰጣል እና ብዙ ጊዜ የኮርስ ቁሳቁሶችን፣ የቀጥታ ክፍለ ጊዜዎችን እና የተግባር ስራዎችን በማዘጋጀት ስልጠና ይሰጣል።
 \---DOC\_END---
 
 \---DOC\_START---
@@ -170,14 +169,6 @@ language: en
 tags: ingestion, guidelines
 summary: Rules for splitting, metadata, and language handling for indexing Yared Coding content.
 content:
-
-1. Chunk size: aim for 200–400 tokens (roughly 100–300 words). Overlap: 20–30%.
-2. Metadata required: id, source\_url, title, author, published\_date, language, tags, summary.
-3. Language: set language=en for English text, language=am for Amharic. When possible, include both language versions as separate chunks.
-4. Private data: use private:/ namespace and do not expose without consent.
-5. Citation: store `source_url` and `position_index` in metadata so answers can include precise citations.
-6. Embeddings: use multilingual embeddings that support Amharic or transliterate Amharic text before embedding if necessary.
-   \---DOC\_END---
 
 ---
 

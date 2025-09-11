@@ -1,0 +1,21 @@
+Beginner Digital Marketing: Foundations
+Chapter Objectives:
+1.	Digital Landscape Literacy
+→ Identify core digital marketing channels
+→ Explain Ethiopia's digital ecosystem challenges/opportunities
+→ Recognize current trends (short-form video, social commerce)
+2.	Content Creation & Distribution
+→ Apply AI tools (Canva/ChatGPT) for content creation
+→ Design platform-specific content calendars
+→ Execute basic social media scheduling (Buffer/Hootsuite)
+3.	Social Media Execution
+→ Set up business profiles (Facebook/Instagram/TikTok)
+→ Implement engagement tactics for community growth
+→ Utilize Instagram Shops/WhatsApp Business API
+4.	Freelancing Foundations
+→ Optimize LinkedIn profiles for visibility
+→ Navigate Upwork bidding systems
+→ Apply safe cross-border e-commerce practices (AliExpress)
+Major Concepts:
+Digital Ecosystem | AI Content Tools | Platform Algorithms | UGC | Social Commerce
+

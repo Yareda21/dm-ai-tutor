@@ -1,252 +1,46 @@
-
-# from dotenv import load_dotenv
-# from fastapi import FastAPI, HTTPException
-# from pydantic import BaseModel
-# from starlette.middleware.cors import CORSMiddleware
-# from starlette.concurrency import run_in_threadpool
-# import os
-# import traceback
-
-# # your LLM import (keeps the same as your original)
-# from langchain_openai import ChatOpenAI
-
-# load_dotenv()
-
-# # initialize LLM (same settings you used)
-# llm = ChatOpenAI(
-#     model="openai/gpt-oss-20b:free",
-#     openai_api_key=os.getenv("SECOND_OPEN_AI_KEY"),
-#     openai_api_base="https://openrouter.ai/api/v1",
-#     temperature=0.0,
-#     max_tokens=4096,
-# )
-
-# app = FastAPI(title="AI Agent API")
-
-# # CORS: set ALLOWED_ORIGINS in Render to your frontend origin(s) like https://yoursite.vercel.app
-# raw_origins = os.getenv("ALLOWED_ORIGINS", "*")
-# if raw_origins.strip() == "*" or raw_origins.strip() == "":
-#     origins = ["*"]
-# else:
-#     origins = [o.strip() for o in raw_origins.split(",") if o.strip()]
-
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
-
-# class ChatRequest(BaseModel):
-#     prompt: str
-#     session_id: str | None = "anon_user"
-
-# @app.get("/health")
-# def health():
-#     return {"status": "ok"}
-
-# @app.post("/ai/chat")
-# async def ai_chat(req: ChatRequest):
-#     try:
-#         # run the (possibly blocking) llm.invoke in a thread so the server stays responsive
-#         result = await run_in_threadpool(llm.invoke, req.prompt)
-
-#         # best-effort extraction of a human-friendly text answer
-#         answer = None
-#         if isinstance(result, dict):
-#             answer = result.get("answer") or result.get("content") or result.get("response")
-#         if not answer:
-#             answer = str(result)
-
-#         return {"answer": answer, "raw": result}
-#     except Exception as e:
-#         # return useful debug info (strip in prod if needed)
-#         return {"error": str(e), "traceback": traceback.format_exc()}
-
-# rag_fastapi.py
+# main.py
+import os
+import traceback
+import requests
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel
 from starlette.middleware.cors import CORSMiddleware
 from starlette.concurrency import run_in_threadpool
-import os, glob, pickle, traceback
 
-# LLM import - keep your original
+# LLM import (as you used)
 from langchain_openai import ChatOpenAI
 
-# Embedding + index
-from sentence_transformers import SentenceTransformer
-import faiss
+# our helper
+from supabase_rag import init_db_pool, retrieve_topk
 
 load_dotenv()
 
-# -------------------------
-# initialize LLM (your existing)
-# -------------------------
+# CONFIG
+SECOND_OPEN_AI_KEY = os.getenv("SECOND_OPEN_AI_KEY")
+SUPABASE_DATABASE_URL = os.getenv("SUPABASE_DATABASE_URL")
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*")
+TOP_K = int(os.getenv("TOP_K", "4"))
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
+VECTOR_DIM = int(os.getenv("VECTOR_DIM", "1536"))
+
+# LLM init (OpenRouter base)
 llm = ChatOpenAI(
     model="openai/gpt-oss-20b:free",
-    openai_api_key=os.getenv("SECOND_OPEN_AI_KEY"),
+    openai_api_key=SECOND_OPEN_AI_KEY,
     openai_api_base="https://openrouter.ai/api/v1",
     temperature=0.0,
-    max_tokens=4096,
+    max_tokens=2048,
 )
 
-# -------------------------
-# Config
-# -------------------------
-DOCS_DIR = os.getenv("RAG_DOCS_DIR", "docs")     # put .txt (or pre-extracted text) here
-INDEX_PATH = os.getenv("RAG_INDEX_PATH", "faiss_index.ivf")  # file to persist index
-META_PATH = os.getenv("RAG_META_PATH", "faiss_meta.pkl")
-EMBED_MODEL_NAME = os.getenv("EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
-CHUNK_SIZE = int(os.getenv("RAG_CHUNK_SIZE", "800"))   # characters per chunk
-CHUNK_OVERLAP = int(os.getenv("RAG_CHUNK_OVERLAP", "150"))
-TOP_K = int(os.getenv("RAG_TOP_K", "4"))
-MAX_CONTEXT_CHARS = int(os.getenv("RAG_MAX_CONTEXT_CHARS", "3000"))  # rough trimming
+# FastAPI app
+app = FastAPI(title="RAG API (Supabase + OpenRouter)")
 
-# -------------------------
-# Simple chunker
-# -------------------------
-def chunk_text(text, chunk_size=CHUNK_SIZE, overlap=CHUNK_OVERLAP):
-    chunks = []
-    start = 0
-    L = len(text)
-    while start < L:
-        end = min(start + chunk_size, L)
-        chunk = text[start:end].strip()
-        if chunk:
-            chunks.append((start, chunk))
-        start = max(end - overlap, end) if end < L else end
-    return chunks
-
-# -------------------------
-# Build / load index (very small, simple)
-# -------------------------
-embed_model = SentenceTransformer(EMBED_MODEL_NAME)
-# We'll store metadata list aligned with faiss vectors
-index = None
-metadata = []
-
-def build_index_from_docs(docs_dir=DOCS_DIR):
-    global index, metadata
-    texts = []
-    metadata = []
-
-    file_paths = glob.glob(os.path.join(docs_dir, "*.txt"))
-    if not file_paths:
-        print("No txt files found in docs/ - index will be empty.")
-        # create empty index with expected dim
-        dim = embed_model.get_sentence_embedding_dimension()
-        index = faiss.IndexFlatIP(dim)
-        return
-
-    for path in file_paths:
-        with open(path, "r", encoding="utf-8") as f:
-            full = f.read()
-        chunks = chunk_text(full)
-        for start, chunk in chunks:
-            metadata.append({
-                "source": os.path.basename(path),
-                "offset": start,
-                "text": chunk
-            })
-            texts.append(chunk)
-
-    # compute embeddings (in threadpool because it's blocking)
-    embs = embed_model.encode(texts, show_progress_bar=True, convert_to_numpy=True)
-    # normalize for inner-product similarity
-    faiss.normalize_L2(embs)
-
-    dim = embs.shape[1]
-    # simple flat index (fast and ok for small corpora)
-    index = faiss.IndexFlatIP(dim)
-    index.add(embs)
-
-    # persist
-    faiss.write_index(index, INDEX_PATH)
-    with open(META_PATH, "wb") as f:
-        pickle.dump(metadata, f)
-    print(f"Built index with {index.ntotal} vectors.")
-
-def load_index():
-    global index, metadata
-    if os.path.exists(INDEX_PATH) and os.path.exists(META_PATH):
-        index = faiss.read_index(INDEX_PATH)
-        with open(META_PATH, "rb") as f:
-            metadata = pickle.load(f)
-        print(f"Loaded index with {index.ntotal} vectors.")
-    else:
-        build_index_from_docs()
-
-# Build/load on startup
-load_index()
-
-# -------------------------
-# Retrieval helper
-# -------------------------
-def retrieve(query: str, top_k=TOP_K):
-    if index is None or index.ntotal == 0:
-        return []
-
-    q_emb = embed_model.encode([query], convert_to_numpy=True)
-    faiss.normalize_L2(q_emb)
-    D, I = index.search(q_emb, top_k)
-    results = []
-    for score, idx in zip(D[0], I[0]):
-        if idx < 0 or idx >= len(metadata):
-            continue
-        m = metadata[idx]
-        results.append({
-            "score": float(score),
-            "source": m["source"],
-            "offset": m["offset"],
-            "text": m["text"]
-        })
-    return results
-
-# -------------------------
-# Prompt assembly
-# -------------------------
-SYSTEM_PROMPT = (
-    "You are an assistant that must answer using the provided CONTEXT only. "
-    "If the answer is not in the context, say 'I don't know' or provide a best effort and clearly note uncertainty. "
-    "Cite sources by filename in square brackets like [source.txt]."
-)
-
-def build_prompt(question: str, retrieved: list):
-    if not retrieved:
-        return f"{SYSTEM_PROMPT}\n\nUser: {question}\n\nContext: <no results available>"
-
-    # join context pieces with separators and source labels
-    pieces = []
-    total_chars = 0
-    for r in retrieved:
-        text = r["text"].strip()
-        src = r["source"]
-        part = f"[{src}]\n{text}\n---\n"
-        if total_chars + len(part) > MAX_CONTEXT_CHARS:
-            break
-        pieces.append(part)
-        total_chars += len(part)
-
-    context = "\n".join(pieces)
-    prompt = (
-        f"{SYSTEM_PROMPT}\n\nCONTEXT:\n{context}\n\nUser question: {question}\n\n"
-        "Answer using only the CONTEXT above and cite the sources used. "
-        "If the context does not contain the answer, say you don't know."
-    )
-    return prompt
-
-# -------------------------
-# FastAPI (your original config)
-# -------------------------
-app = FastAPI(title="AI Agent API - RAG enabled")
-
-raw_origins = os.getenv("ALLOWED_ORIGINS", "*")
-if raw_origins.strip() == "*" or raw_origins.strip() == "":
+# CORS setup
+if ALLOWED_ORIGINS.strip() == "*" or ALLOWED_ORIGINS.strip() == "":
     origins = ["*"]
 else:
-    origins = [o.strip() for o in raw_origins.split(",") if o.strip()]
+    origins = [o.strip() for o in ALLOWED_ORIGINS.split(",") if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,
@@ -256,53 +50,100 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Models
 class ChatRequest(BaseModel):
     prompt: str
     session_id: str | None = "anon_user"
-    use_rag: bool | None = True   # if False, fall back to plain LLM
+    use_rag: bool | None = True
+
+@app.on_event("startup")
+async def startup():
+    # Init DB pool (blocking) in threadpool
+    await run_in_threadpool(init_db_pool)
+    print("DB pool initialized.")
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
+# ---------- Embeddings via OpenRouter (blocking -> run_in_threadpool) ----------
+def get_query_embedding_via_openrouter(text: str):
+    """
+    Sends a request to OpenRouter embeddings endpoint.
+    Adjust payload/endpoint if you use another provider.
+    """
+    if not SECOND_OPEN_AI_KEY:
+        raise RuntimeError("SECOND_OPEN_AI_KEY not set")
+
+    url = "https://openrouter.ai/v1/embeddings"
+    headers = {"Authorization": f"Bearer {SECOND_OPEN_AI_KEY}", "Content-Type": "application/json"}
+    payload = {"model": EMBEDDING_MODEL, "input": text}
+    resp = requests.post(url, headers=headers, json=payload, timeout=30)
+    resp.raise_for_status()
+    data = resp.json()
+    # unwrap depending on provider shape:
+    # OpenRouter-like: data["data"][0]["embedding"]
+    if "data" in data and isinstance(data["data"], list) and len(data["data"]) > 0:
+        emb = data["data"][0].get("embedding") or data["data"][0].get("vector") or None
+        if emb is None:
+            raise RuntimeError("Unexpected embeddings response structure: " + str(data))
+        return emb
+    # fallback: OpenAI-like
+    if "data" in data and len(data["data"]) > 0 and "embedding" in data["data"][0]:
+        return data["data"][0]["embedding"]
+    raise RuntimeError("Could not parse embedding response: " + str(data))
+
+# ---------- Prompt builder ----------
+SYSTEM_PROMPT = (
+    "You are a helpful assistant. Use ONLY the provided CONTEXT to answer. "
+    "Cite sources by filename in square brackets like [doc.txt]. If the answer is not in the context, say 'I don't know.'"
+)
+
+def build_prompt(question: str, retrieved: list):
+    pieces = []
+    total_chars = 0
+    MAX_CONTEXT_CHARS = 3000
+    for r in retrieved:
+        part = f"[{r['source']}] {r['text']}\n---\n"
+        if total_chars + len(part) > MAX_CONTEXT_CHARS:
+            break
+        pieces.append(part)
+        total_chars += len(part)
+    context = "\n".join(pieces) if pieces else "<no context available>"
+    prompt = f"{SYSTEM_PROMPT}\n\nCONTEXT:\n{context}\n\nQuestion: {question}\n\nAnswer:"
+    return prompt
+
+# ---------- API endpoint ----------
 @app.post("/ai/chat")
 async def ai_chat(req: ChatRequest):
     try:
         if req.use_rag:
-            # 1) retrieve
-            retrieved = await run_in_threadpool(retrieve, req.prompt, TOP_K)
-            # 2) build prompt
+            # 1) compute query embedding (use run_in_threadpool because it blocks w/ requests)
+            query_emb = await run_in_threadpool(get_query_embedding_via_openrouter, req.prompt)
+
+            # 2) retrieve top-k from Supabase (blocking DB IO)
+            retrieved = await run_in_threadpool(retrieve_topk, query_emb, TOP_K)
+
+            # 3) build prompt & call LLM (blocking)
             prompt = build_prompt(req.prompt, retrieved)
-            # 3) call llm in threadpool (your pattern)
             result = await run_in_threadpool(llm.invoke, prompt)
-            # extract answer
+
+            # 4) extract answer
             answer = None
             if isinstance(result, dict):
-                answer = result.get("answer") or result.get("content") or result.get("response")
+                answer = result.get("content") or result.get("answer") or result.get("response")
             if not answer:
                 answer = str(result)
-            return {
-                "answer": answer,
-                "raw": result,
-                "sources": [{"source": r["source"], "score": r["score"]} for r in retrieved]
-            }
+
+            return {"answer": answer, "raw": result, "sources": retrieved}
         else:
-            # fallback to plain LLM
+            # non-RAG path
             result = await run_in_threadpool(llm.invoke, req.prompt)
             answer = None
             if isinstance(result, dict):
-                answer = result.get("answer") or result.get("content") or result.get("response")
+                answer = result.get("content") or result.get("answer") or result.get("response")
             if not answer:
                 answer = str(result)
             return {"answer": answer, "raw": result, "sources": []}
     except Exception as e:
         return {"error": str(e), "traceback": traceback.format_exc()}
-
-# optional: endpoint to rebuild index (admin)
-@app.post("/ai/reindex")
-async def reindex():
-    try:
-        await run_in_threadpool(build_index_from_docs)
-        return {"status": "ok", "total_vectors": index.ntotal if index else 0}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
