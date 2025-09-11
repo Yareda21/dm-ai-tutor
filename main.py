@@ -147,3 +147,4 @@ async def ai_chat(req: ChatRequest):
             return {"answer": answer, "raw": result, "sources": []}
     except Exception as e:
         return {"error": str(e), "traceback": traceback.format_exc()}
+
