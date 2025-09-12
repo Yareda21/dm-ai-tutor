@@ -9,7 +9,8 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from starlette.concurrency import run_in_threadpool
-
+from contextlib import asynccontextmanager
+from rag_api.supabase_rag import init_db_pool
 from supabase_rag import retrieve_topk
 
 load_dotenv()
@@ -22,11 +23,27 @@ MAX_CHUNK_CHARS = int(os.getenv("MAX_CHUNK_CHARS", "800"))
 
 SAFE_TOP_K = int(os.getenv("TOP_K", "4"))
 
-app = FastAPI(title="RAG API")
-print("RAG API starting with EMBED_SERVICE_URL", EMBED_SERVICE_URL)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Initialize database pool
+    print("Starting up application...")
+    await run_in_threadpool(init_db_pool)
+    yield
+    # Shutdown: Clean up resources
+    print("Shutting down application...")
+    # Add any cleanup code here if needed
+
+app = FastAPI(title="RAG API", lifespan=lifespan)
 class ChatRequest(BaseModel):
     prompt: str
     use_rag: bool = True
+
+
+@app.on_event("startup")
+async def startup():
+    # Init DB pool (blocking) in threadpool
+    await run_in_threadpool(init_db_pool)
+    print("DB pool initialized.")
 
 @app.get("/health")
 def health():
