@@ -1,15 +1,14 @@
 import requests
 
-url = "http://localhost:8001/embed"
-headers = {"Content-Type": "application/json"}
-data = {"texts": ["tell me about the owner of the school?"]}
+url = 'http://127.0.0.1:8000/ai/chat'
+while True:
+    prompt = input("You: ")
 
-try:
-    response = requests.post(url, headers=headers, json=data)
-    print("Status Code:", response.status_code)
-    print("Response JSON:", response.json())
-except requests.exceptions.RequestException as e:
-    print("Request failed:", e)
-except ValueError:
-    print("Failed to parse JSON response")
-    print("Raw response:", response.text)
+    data = {'prompt': prompt, 'use_rag': True}
+
+    try:
+        response = requests.post(url, json=data)
+        response.raise_for_status()
+        print("ai:", response.json().get('answer', 'No response field in JSON'))
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred: {e}")
